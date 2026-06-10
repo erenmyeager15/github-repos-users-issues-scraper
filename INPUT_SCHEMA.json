@@ -1,0 +1,86 @@
+{
+  "title": "GitHub Repos, Users & Issues Scraper",
+  "description": "Scrape GitHub repositories, users, and issues via the official GitHub API. Add a personal access token for higher rate limits (5000/hour vs 60/hour).",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "repos": {
+      "title": "Repositories",
+      "description": "Repositories as \"owner/repo\" (e.g. \"facebook/react\") or full GitHub URLs.",
+      "type": "array",
+      "editor": "stringList",
+      "prefill": ["facebook/react"],
+      "default": ["facebook/react"]
+    },
+    "users": {
+      "title": "Users / Organizations",
+      "description": "GitHub usernames or organization names (e.g. \"torvalds\").",
+      "type": "array",
+      "editor": "stringList",
+      "default": []
+    },
+    "searchQueries": {
+      "title": "Repository Search Queries",
+      "description": "GitHub repository search queries (e.g. \"web scraper language:python\").",
+      "type": "array",
+      "editor": "stringList",
+      "default": []
+    },
+    "includeIssues": {
+      "title": "Include Issues",
+      "description": "If enabled, recent issues (and PRs) are nested in each repository record.",
+      "type": "boolean",
+      "editor": "checkbox",
+      "default": false
+    },
+    "maxIssuesPerRepo": {
+      "title": "Max Issues Per Repo",
+      "description": "Maximum issues to extract per repository.",
+      "type": "integer",
+      "editor": "number",
+      "default": 20,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "includeUserRepos": {
+      "title": "Include User Repositories",
+      "description": "If enabled, a user's repositories are nested in each user record.",
+      "type": "boolean",
+      "editor": "checkbox",
+      "default": false
+    },
+    "maxReposPerUser": {
+      "title": "Max Repos Per User",
+      "description": "Maximum repositories to list per user.",
+      "type": "integer",
+      "editor": "number",
+      "default": 20,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "maxResults": {
+      "title": "Max Repositories",
+      "description": "Maximum repositories to scrape in total (across repos list and search).",
+      "type": "integer",
+      "editor": "number",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "githubToken": {
+      "title": "GitHub Token (optional)",
+      "description": "A GitHub personal access token raises the rate limit from 60/hour to 5000/hour. Create one at github.com/settings/tokens (no scopes needed for public data).",
+      "type": "string",
+      "editor": "textfield",
+      "isSecret": true,
+      "default": ""
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "description": "Proxy settings. Rotating proxies help multiply the unauthenticated rate limit across IPs.",
+      "type": "object",
+      "editor": "proxy",
+      "default": { "useApifyProxy": true }
+    }
+  }
+}

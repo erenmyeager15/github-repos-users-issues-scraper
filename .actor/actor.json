@@ -1,0 +1,94 @@
+{
+  "actorSpecification": 1,
+  "name": "github-repos-users-issues-scraper",
+  "title": "GitHub Scraper - Repos, Users & Issues",
+  "description": "Scrape GitHub repositories, users, and issues via the official GitHub API. Get stars, forks, languages, topics, issues, user profiles, and follower counts. No login needed (optional token for higher limits).",
+  "version": "1.0",
+  "categories": ["DEVELOPER_TOOLS", "BUSINESS"],
+  "dockerfile": "Dockerfile",
+  "input": "../INPUT_SCHEMA.json",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "repos": {
+          "title": "Repositories",
+          "transformation": {
+            "fields": ["fullName", "owner", "description", "language", "stars", "forks", "watchers", "openIssues", "license", "topics", "isFork", "isArchived", "createdAt", "pushedAt", "url", "issuesScrapedCount", "scrapedAt"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "fullName": { "label": "Repo", "format": "text" },
+              "owner": { "label": "Owner", "format": "text" },
+              "description": { "label": "Description", "format": "text" },
+              "language": { "label": "Language", "format": "text" },
+              "stars": { "label": "Stars", "format": "number" },
+              "forks": { "label": "Forks", "format": "number" },
+              "watchers": { "label": "Watchers", "format": "number" },
+              "openIssues": { "label": "Open Issues", "format": "number" },
+              "license": { "label": "License", "format": "text" },
+              "topics": { "label": "Topics", "format": "array" },
+              "isFork": { "label": "Fork", "format": "boolean" },
+              "isArchived": { "label": "Archived", "format": "boolean" },
+              "createdAt": { "label": "Created", "format": "date" },
+              "pushedAt": { "label": "Last Push", "format": "date" },
+              "url": { "label": "URL", "format": "link" },
+              "issuesScrapedCount": { "label": "Issues", "format": "number" },
+              "scrapedAt": { "label": "Scraped At", "format": "text" }
+            }
+          }
+        },
+        "users": {
+          "title": "Users",
+          "transformation": {
+            "fields": ["login", "name", "type", "company", "location", "bio", "followers", "following", "publicRepos", "blog", "url", "createdAt", "reposScrapedCount", "scrapedAt"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "login": { "label": "Username", "format": "text" },
+              "name": { "label": "Name", "format": "text" },
+              "type": { "label": "Type", "format": "text" },
+              "company": { "label": "Company", "format": "text" },
+              "location": { "label": "Location", "format": "text" },
+              "bio": { "label": "Bio", "format": "text" },
+              "followers": { "label": "Followers", "format": "number" },
+              "following": { "label": "Following", "format": "number" },
+              "publicRepos": { "label": "Public Repos", "format": "number" },
+              "blog": { "label": "Website", "format": "link" },
+              "url": { "label": "Profile URL", "format": "link" },
+              "createdAt": { "label": "Joined", "format": "date" },
+              "reposScrapedCount": { "label": "Repos", "format": "number" },
+              "scrapedAt": { "label": "Scraped At", "format": "text" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "pricingInfo": {
+    "pricingModel": "PAY_PER_EVENT",
+    "pricingPerEvent": {
+      "actorChargeEvents": {
+        "repo-scraped": {
+          "eventTitle": "Repository Scraped",
+          "eventDescription": "Charged for each repository extracted (includes nested issues when enabled).",
+          "eventPriceUsd": 0.002
+        },
+        "user-scraped": {
+          "eventTitle": "User Scraped",
+          "eventDescription": "Charged for each user profile extracted (includes nested repos when enabled).",
+          "eventPriceUsd": 0.002
+        }
+      }
+    }
+  },
+  "defaultRunOptions": {
+    "build": "latest",
+    "memoryMbytes": 1024,
+    "timeoutSecs": 3600
+  },
+  "minMemoryMbytes": 256,
+  "maxMemoryMbytes": 4096
+}
