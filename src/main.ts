@@ -124,7 +124,10 @@ async function processUser(username: string): Promise<void> {
         if (Array.isArray(data)) userRepos = data.slice(0, maxReposPerUser);
     }
     // Users go to a dedicated dataset so the default (repos) dataset stays one clean shape.
-    const usersDataset = await Actor.openDataset('users').catch(() => null);
+    const usersDataset = await Actor.openDataset('users').catch((e) => {
+        log.warning(`Could not open 'users' dataset (${(e as Error).message}); writing user to default dataset.`);
+        return null;
+    });
     const record = mapUser(user, userRepos.map(mapUserRepo));
     if (usersDataset) await usersDataset.pushData(record);
     else await Actor.pushData(record);
