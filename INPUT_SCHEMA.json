@@ -72,8 +72,7 @@
       "description": "A GitHub personal access token raises the rate limit from 60/hour to 5000/hour. Create one at github.com/settings/tokens (no scopes needed for public data).",
       "type": "string",
       "editor": "textfield",
-      "isSecret": true,
-      "default": ""
+      "isSecret": true
     },
     "proxyConfiguration": {
       "title": "Proxy Configuration",
