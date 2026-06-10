@@ -1,0 +1,11 @@
+{
+  "repos": ["facebook/react"],
+  "users": ["torvalds"],
+  "searchQueries": [],
+  "includeIssues": true,
+  "maxIssuesPerRepo": 3,
+  "includeUserRepos": true,
+  "maxReposPerUser": 3,
+  "maxResults": 10,
+  "proxyConfiguration": { "useApifyProxy": true }
+}
