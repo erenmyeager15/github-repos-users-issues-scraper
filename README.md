@@ -87,7 +87,7 @@ Perfect for **developer lead generation, OSS research, tech-trend analysis, and 
 }
 ```
 
-Repos and users land in the same dataset with separate **Repositories** and **Users** table views.
+Repositories land in the default dataset (**Repositories** view). User profiles are saved to a separate **users** dataset so each output stays one clean shape.
 
 ## Pricing
 

@@ -123,7 +123,11 @@ async function processUser(username: string): Promise<void> {
         const data = await ghFetch<any[]>(`/users/${username}/repos?per_page=${Math.min(maxReposPerUser, 100)}&sort=updated`);
         if (Array.isArray(data)) userRepos = data.slice(0, maxReposPerUser);
     }
-    await Actor.pushData(mapUser(user, userRepos.map(mapUserRepo)));
+    // Users go to a dedicated dataset so the default (repos) dataset stays one clean shape.
+    const usersDataset = await Actor.openDataset('users').catch(() => null);
+    const record = mapUser(user, userRepos.map(mapUserRepo));
+    if (usersDataset) await usersDataset.pushData(record);
+    else await Actor.pushData(record);
     await Actor.charge({ eventName: 'user-scraped' }).catch(() => null);
     scraped++;
     log.info(`user ${username}: ${user.followers} followers${userRepos.length ? ` + ${userRepos.length} repos` : ''}`);
