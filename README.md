@@ -1,6 +1,6 @@
 # GitHub Scraper - Repos, Users & Issues
 
-Scrape **GitHub repositories, users, and issues** via the official GitHub REST API. Get stars, forks, languages, topics, licenses, open-issue counts, full user profiles, follower counts, and recent issues/PRs. Search repositories by query. Export to **JSON, CSV, Excel, or HTML**, or pull via the Apify API.
+Scrape **GitHub repositories, users, and issues** via the official GitHub REST API - no login required (add a free token for higher rate limits). Get stars, forks, languages, topics, licenses, open-issue counts, full user profiles, follower counts, and recent issues/PRs. Search repositories by query. Export to **JSON, CSV, Excel, or HTML**, or pull via the Apify API.
 
 Perfect for **developer lead generation, OSS research, tech-trend analysis, and recruiting**.
 
@@ -88,6 +88,14 @@ Perfect for **developer lead generation, OSS research, tech-trend analysis, and 
 ```
 
 Repositories land in the default dataset (**Repositories** view). User profiles are saved to a separate **users** dataset so each output stays one clean shape.
+
+## How to Scrape GitHub (Step by Step)
+
+1. Click **Try for free** / **Run**.
+2. Add repositories (`owner/repo`), usernames/orgs, or repository search queries.
+3. (Optional) Paste a GitHub token to lift the rate limit to 5,000 requests/hour, and enable `includeIssues` / `includeUserRepos` for nested data.
+4. Set `maxResults` (start small to test).
+5. Run, then export results as JSON, CSV, Excel, or HTML, or pull them via the Apify API.
 
 ## Pricing
 
