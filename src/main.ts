@@ -54,6 +54,8 @@ const baseHeaders: Record<string, string> = {
 };
 if (githubToken) baseHeaders.Authorization = `Bearer ${githubToken.trim()}`;
 
+const CHARGE_EVENT_NAME = 'repo-scraped';
+
 async function ghFetch<T = any>(path: string): Promise<T | null> {
     const url = path.startsWith('http') ? path : `https://api.github.com${path}`;
     for (let attempt = 0; attempt < 4; attempt++) {
@@ -90,13 +92,18 @@ async function ghFetch<T = any>(path: string): Promise<T | null> {
 let scraped = 0;
 const repoTargets = [...repoList];
 
-// Resolve search queries into repo full names (search returns full repo objects).
+// Resolve search queries into repo full names. GitHub search caps each page at 100.
 for (const q of queries) {
-    if (scraped >= 0 && repoTargets.length >= maxResults) break;
-    const data = await ghFetch<any>(`/search/repositories?q=${encodeURIComponent(q)}&per_page=${Math.min(maxResults, 100)}`);
-    const items: any[] = data?.items ?? [];
-    for (const it of items) if (it.full_name) repoTargets.push(it.full_name);
-    log.info(`Search "${q}" -> ${items.length} repos`);
+    let found = 0;
+    for (let page = 1; repoTargets.length < maxResults && page <= 10; page++) {
+        const perPage = Math.min(maxResults - repoTargets.length, 100);
+        const data = await ghFetch<any>(`/search/repositories?q=${encodeURIComponent(q)}&per_page=${perPage}&page=${page}`);
+        const items: any[] = data?.items ?? [];
+        for (const it of items) if (it.full_name) repoTargets.push(it.full_name);
+        found += items.length;
+        if (items.length < perPage) break;
+    }
+    log.info(`Search "${q}" -> ${found} repos`);
 }
 
 const uniqueRepos = [...new Set(repoTargets)].slice(0, maxResults > 0 ? maxResults : undefined);
@@ -110,7 +117,7 @@ async function processRepo(fullName: string): Promise<void> {
         if (Array.isArray(data)) issues = data.slice(0, maxIssuesPerRepo);
     }
     await Actor.pushData(mapRepo(repo, issues.map(mapIssue)));
-    await Actor.charge({ eventName: 'repo-scraped' }).catch(() => null);
+    await Actor.charge({ eventName: CHARGE_EVENT_NAME }).catch(() => null);
     scraped++;
     log.info(`repo ${fullName}: ${repo.stargazers_count} stars${issues.length ? ` + ${issues.length} issues` : ''}`);
 }
@@ -131,7 +138,7 @@ async function processUser(username: string): Promise<void> {
     const record = mapUser(user, userRepos.map(mapUserRepo));
     if (usersDataset) await usersDataset.pushData(record);
     else await Actor.pushData(record);
-    await Actor.charge({ eventName: 'user-scraped' }).catch(() => null);
+    await Actor.charge({ eventName: CHARGE_EVENT_NAME }).catch(() => null);
     scraped++;
     log.info(`user ${username}: ${user.followers} followers${userRepos.length ? ` + ${userRepos.length} repos` : ''}`);
 }

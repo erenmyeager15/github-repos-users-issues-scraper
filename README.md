@@ -6,13 +6,13 @@ Perfect for **developer lead generation, OSS research, tech-trend analysis, and 
 
 ## Features
 
-- ✅ **Official GitHub API** - accurate, structured data
-- ✅ **Repos, users, and issues** in one actor
-- ✅ **Repository search** by query (language, stars, topics, etc.)
-- ✅ **Nested data** - issues nested per repo, repos nested per user (no messy mixed rows)
-- ✅ **Optional token** - 5,000 requests/hour with a free GitHub token (60/hour without)
-- ✅ **Proxy rotation** - multiply the unauthenticated limit across IPs
-- ✅ **Fast & lightweight** - pure API, no headless browser
+- Official GitHub API - accurate, structured data
+- Repos, users, and issues in one actor
+- Repository search by query (language, stars, topics, etc.)
+- Nested data - issues nested per repo, repos nested per user (no messy mixed rows)
+- Optional token - 5,000 requests/hour with a free GitHub token (60/hour without)
+- Proxy rotation - multiply the unauthenticated limit across IPs
+- Fast and lightweight - pure API, no headless browser
 
 ## Input
 
@@ -103,8 +103,7 @@ This Actor uses **pay-per-result** pricing:
 
 | Event | Price |
 |-------|-------|
-| Per repository scraped | **$0.002** ($2 / 1,000 repos) |
-| Per user scraped | **$0.002** ($2 / 1,000 users) |
+| GitHub record scraped | **$0.002** ($2 / 1,000 repos or users) |
 
 Nested issues and user-repos are included free. You are only charged for entities actually returned. Apify platform usage is billed separately by Apify.
 
