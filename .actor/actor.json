@@ -4,7 +4,7 @@
   "title": "GitHub Scraper - Repos, Users & Issues",
   "description": "Scrape GitHub repositories, users, and issues via the official GitHub API. Get stars, forks, languages, topics, issues, user profiles, and follower counts. No login needed (optional token for higher limits).",
   "version": "1.0",
-  "categories": ["DEVELOPER_TOOLS", "LEAD_GENERATION", "OTHER"],
+  "categories": ["DEVELOPER_TOOLS", "OTHER"],
   "dockerfile": "Dockerfile",
   "input": "../INPUT_SCHEMA.json",
   "storages": {

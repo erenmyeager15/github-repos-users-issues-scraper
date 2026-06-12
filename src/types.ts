@@ -74,7 +74,6 @@ export interface UserRecord {
     company: string | null;
     blog: string | null;
     location: string | null;
-    email: string | null;
     bio: string | null;
     followers: number | null;
     following: number | null;

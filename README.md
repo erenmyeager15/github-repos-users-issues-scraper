@@ -120,6 +120,12 @@ Nested issues and user-repos are included free. You are only charged for entitie
 - Use rich search queries: `topic:machine-learning language:python stars:>500`.
 - Turn on `includeIssues` / `includeUserRepos` for deeper, nested datasets.
 
+## Responsible Use
+
+This Actor is intended for lawful collection of publicly available information only. Users are responsible for ensuring their use complies with the source website's terms, robots.txt, applicable privacy laws, including India's DPDP Act, and all local regulations.
+
+Do not use this Actor to collect, store, sell, or misuse personal data without a lawful basis. The Actor author is not responsible for misuse by end users.
+
 ## License
 
 Apache-2.0

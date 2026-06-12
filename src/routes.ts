@@ -68,7 +68,6 @@ export function mapUser(u: any, repos: UserRepoSummary[]): UserRecord {
         company: u.company ?? null,
         blog: u.blog || null,
         location: u.location ?? null,
-        email: u.email ?? null,
         bio: u.bio ?? null,
         followers: n(u.followers),
         following: n(u.following),
