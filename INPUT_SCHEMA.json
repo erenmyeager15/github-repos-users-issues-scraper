@@ -79,7 +79,7 @@
       "description": "Proxy settings. Rotating proxies help multiply the unauthenticated rate limit across IPs.",
       "type": "object",
       "editor": "proxy",
-      "default": { "useApifyProxy": true }
+      "default": { "useApifyProxy": false }
     }
   }
 }

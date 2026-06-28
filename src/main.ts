@@ -32,7 +32,7 @@ function parseUser(raw: string): string | null {
 
 const repoList = [...new Set(repos.map(parseRepo).filter((x): x is string => !!x))];
 const userList = [...new Set(users.map(parseUser).filter((x): x is string => !!x))];
-const queries = searchQueries.map((q) => q.trim()).filter(Boolean);
+const queries = [...new Set(searchQueries.map((q) => q.trim()).filter(Boolean))];
 
 if (repoList.length === 0 && userList.length === 0 && queries.length === 0) {
     log.error('No input. Provide repos ("owner/repo"), users ("username"), or searchQueries.');
@@ -55,10 +55,16 @@ const baseHeaders: Record<string, string> = {
 if (githubToken) baseHeaders.Authorization = `Bearer ${githubToken.trim()}`;
 
 const CHARGE_EVENT_NAME = 'repo-scraped';
+let scraped = 0;
+let spendingLimitReached = false;
 
 async function ghFetch<T = any>(path: string): Promise<T | null> {
+    if (spendingLimitReached) return null;
+
     const url = path.startsWith('http') ? path : `https://api.github.com${path}`;
     for (let attempt = 0; attempt < 4; attempt++) {
+        if (spendingLimitReached) return null;
+
         let dispatcher: ProxyAgent | undefined;
         if (proxyConfiguration) {
             const proxyUrl = await proxyConfiguration.newUrl();
@@ -89,7 +95,6 @@ async function ghFetch<T = any>(path: string): Promise<T | null> {
     return null;
 }
 
-let scraped = 0;
 const repoTargets = [...repoList];
 
 // Resolve search queries into repo full names. GitHub search caps each page at 100.
@@ -109,6 +114,8 @@ for (const q of queries) {
 const uniqueRepos = [...new Set(repoTargets)].slice(0, maxResults > 0 ? maxResults : undefined);
 
 async function processRepo(fullName: string): Promise<void> {
+    if (spendingLimitReached) return;
+
     const repo = await ghFetch<any>(`/repos/${fullName}`);
     if (!repo || !repo.id) return;
     let issues: any[] = [];
@@ -116,13 +123,26 @@ async function processRepo(fullName: string): Promise<void> {
         const data = await ghFetch<any[]>(`/repos/${fullName}/issues?state=all&per_page=${Math.min(maxIssuesPerRepo, 100)}&sort=created&direction=desc`);
         if (Array.isArray(data)) issues = data.slice(0, maxIssuesPerRepo);
     }
-    await Actor.pushData(mapRepo(repo, issues.map(mapIssue)));
-    await Actor.charge({ eventName: CHARGE_EVENT_NAME }).catch(() => null);
-    scraped++;
+
+    if (spendingLimitReached) return;
+    const chargeResult = await Actor.pushData(mapRepo(repo, issues.map(mapIssue)), CHARGE_EVENT_NAME);
+    const recordWasSaved = chargeResult.chargedCount > 0 || !chargeResult.eventChargeLimitReached;
+    if (recordWasSaved) scraped++;
+
+    if (chargeResult.eventChargeLimitReached) {
+        spendingLimitReached = true;
+        const message = `Stopped at the user's spending limit after ${scraped} GitHub record(s).`;
+        await Actor.setStatusMessage(message);
+        log.warning(message);
+        return;
+    }
+
     log.info(`repo ${fullName}: ${repo.stargazers_count} stars${issues.length ? ` + ${issues.length} issues` : ''}`);
 }
 
 async function processUser(username: string): Promise<void> {
+    if (spendingLimitReached) return;
+
     const user = await ghFetch<any>(`/users/${username}`);
     if (!user || !user.id) return;
     let userRepos: any[] = [];
@@ -130,16 +150,21 @@ async function processUser(username: string): Promise<void> {
         const data = await ghFetch<any[]>(`/users/${username}/repos?per_page=${Math.min(maxReposPerUser, 100)}&sort=updated`);
         if (Array.isArray(data)) userRepos = data.slice(0, maxReposPerUser);
     }
-    // Users go to a dedicated dataset so the default (repos) dataset stays one clean shape.
-    const usersDataset = await Actor.openDataset('users').catch((e) => {
-        log.warning(`Could not open 'users' dataset (${(e as Error).message}); writing user to default dataset.`);
-        return null;
-    });
+
+    if (spendingLimitReached) return;
     const record = mapUser(user, userRepos.map(mapUserRepo));
-    if (usersDataset) await usersDataset.pushData(record);
-    else await Actor.pushData(record);
-    await Actor.charge({ eventName: CHARGE_EVENT_NAME }).catch(() => null);
-    scraped++;
+    const chargeResult = await Actor.pushData(record, CHARGE_EVENT_NAME);
+    const recordWasSaved = chargeResult.chargedCount > 0 || !chargeResult.eventChargeLimitReached;
+    if (recordWasSaved) scraped++;
+
+    if (chargeResult.eventChargeLimitReached) {
+        spendingLimitReached = true;
+        const message = `Stopped at the user's spending limit after ${scraped} GitHub record(s).`;
+        await Actor.setStatusMessage(message);
+        log.warning(message);
+        return;
+    }
+
     log.info(`user ${username}: ${user.followers} followers${userRepos.length ? ` + ${userRepos.length} repos` : ''}`);
 }
 
@@ -151,12 +176,15 @@ const tasks: Array<() => Promise<void>> = [
 const CONCURRENCY = proxyConfiguration ? 5 : 2;
 let idx = 0;
 async function worker(): Promise<void> {
-    while (idx < tasks.length) {
+    while (!spendingLimitReached && idx < tasks.length) {
         const task = tasks[idx++];
         await task();
     }
 }
 await Promise.all(Array.from({ length: Math.min(CONCURRENCY, tasks.length) }, () => worker()));
 
-log.info(`GitHub scrape finished. ${scraped} entities scraped.`);
+if (!spendingLimitReached) {
+    await Actor.setStatusMessage(`Finished with ${scraped} GitHub record(s).`);
+    log.info(`GitHub scrape finished. ${scraped} entities scraped.`);
+}
 await Actor.exit();

@@ -27,7 +27,7 @@ Perfect for **developer lead generation, OSS research, tech-trend analysis, and 
 | `maxReposPerUser` | `integer` | Max repos per user | `20` |
 | `maxResults` | `integer` | Max repos total | `50` |
 | `githubToken` | `string` (secret) | Personal access token for higher limits | `""` |
-| `proxyConfiguration` | `object` | Proxy settings | Apify Proxy |
+| `proxyConfiguration` | `object` | Optional proxy settings | Disabled |
 
 ### Example input
 
@@ -87,7 +87,7 @@ Perfect for **developer lead generation, OSS research, tech-trend analysis, and 
 }
 ```
 
-Repositories land in the default dataset (**Repositories** view). User profiles are saved to a separate **users** dataset so each output stays one clean shape.
+Repositories and user profiles are atomically saved in the default dataset, with separate **Repositories** and **Users and organizations** views.
 
 ## How to Scrape GitHub (Step by Step)
 
@@ -105,7 +105,7 @@ This Actor uses **pay-per-result** pricing:
 |-------|-------|
 | GitHub record scraped | **$0.002** ($2 / 1,000 repos or users) |
 
-Nested issues and user-repos are included free. You are only charged for entities actually returned. Apify platform usage is billed separately by Apify.
+Nested issues and user repositories are included free. Each returned repo or user is saved and charged atomically, and workers stop taking new entities when the user's spending limit is reached. Proxy usage is disabled by default; a GitHub token is the preferred way to raise API limits.
 
 ## Use cases
 

@@ -1,0 +1,14 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "GitHub Scraper Output",
+  "description": "Structured GitHub records for repositories, users, organizations, and optional nested issue or repository summaries from the official GitHub API.",
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "string",
+      "title": "GitHub repository and user records",
+      "description": "Clean dataset items containing public GitHub repository metadata, user or organization profile data, URLs, counts, topics, and optional nested issue or repository summaries.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items"
+    }
+  }
+}
