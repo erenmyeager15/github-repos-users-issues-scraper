@@ -4,9 +4,10 @@
   "title": "GitHub Scraper - Repos, Users & Issues",
   "description": "Scrape GitHub repositories, users, and issues via the official GitHub API. Get stars, forks, languages, topics, issues, user profiles, and follower counts. No login needed (optional token for higher limits).",
   "version": "1.0",
-  "categories": ["DEVELOPER_TOOLS", "OTHER"],
+  "categories": ["DEVELOPER_TOOLS", "BUSINESS", "OTHER"],
   "dockerfile": "Dockerfile",
   "input": "../INPUT_SCHEMA.json",
+  "readme": "../README.md",
   "output": "./output_schema.json",
   "storages": {
     "dataset": {
@@ -71,9 +72,18 @@
     "pricingPerEvent": {
       "actorChargeEvents": {
         "repo-scraped": {
-          "eventTitle": "GitHub record scraped",
+          "eventTitle": "Repository scraped",
           "eventDescription": "Charged once for each clean GitHub repository or user profile saved to a dataset. Nested issues and user repositories are included when enabled.",
-          "eventPriceUsd": 0.002
+          "eventPriceUsd": 0.002,
+          "isPrimaryEvent": true,
+          "isOneTimeEvent": false
+        },
+        "apify-actor-start": {
+          "eventTitle": "Actor start",
+          "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+          "eventPriceUsd": 0.00005,
+          "isPrimaryEvent": false,
+          "isOneTimeEvent": true
         }
       }
     }

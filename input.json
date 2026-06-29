@@ -1,0 +1,14 @@
+{
+  "repos": ["openai/openai-node"],
+  "users": [],
+  "searchQueries": [],
+  "includeIssues": false,
+  "maxIssuesPerRepo": 0,
+  "includeUserRepos": false,
+  "maxReposPerUser": 0,
+  "maxResults": 1,
+  "githubToken": "",
+  "proxyConfiguration": {
+    "useApifyProxy": false
+  }
+}

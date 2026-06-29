@@ -1,16 +1,16 @@
 {
   "title": "GitHub Repos, Users & Issues Scraper",
-  "description": "Scrape GitHub repositories, users, and issues via the official GitHub API. Add a personal access token for higher rate limits (5000/hour vs 60/hour).",
+  "description": "Scrape public GitHub repository and organization/user metadata via the official GitHub API. Start with one repo or user; add a token only for larger runs.",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
     "repos": {
       "title": "Repositories",
-      "description": "Repositories as \"owner/repo\" (e.g. \"facebook/react\") or full GitHub URLs.",
+      "description": "Repositories as \"owner/repo\" (e.g. \"openai/openai-node\") or full GitHub URLs.",
       "type": "array",
       "editor": "stringList",
-      "prefill": ["facebook/react"],
-      "default": ["facebook/react"]
+      "prefill": ["openai/openai-node"],
+      "default": ["openai/openai-node"]
     },
     "users": {
       "title": "Users / Organizations",
@@ -60,10 +60,10 @@
     },
     "maxResults": {
       "title": "Max Repositories",
-      "description": "Maximum repositories to scrape in total (across repos list and search).",
+      "description": "Maximum repositories to scrape in total across the explicit repo list and search queries. Use 1-5 for a quick test.",
       "type": "integer",
       "editor": "number",
-      "default": 50,
+      "default": 1,
       "minimum": 1,
       "maximum": 1000
     },
@@ -76,7 +76,7 @@
     },
     "proxyConfiguration": {
       "title": "Proxy Configuration",
-      "description": "Proxy settings. Rotating proxies help multiply the unauthenticated rate limit across IPs.",
+      "description": "Proxy settings. Keep disabled for normal API runs; a GitHub token is the preferred way to raise rate limits.",
       "type": "object",
       "editor": "proxy",
       "default": { "useApifyProxy": false }
