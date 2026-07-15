@@ -9,6 +9,12 @@
       "title": "GitHub repository and user records",
       "description": "Clean dataset items containing public GitHub repository metadata, user or organization profile data, URLs, counts, topics, and optional nested issue or repository summaries.",
       "template": "{{links.apiDefaultDatasetUrl}}/items"
+    },
+    "runStatus": {
+      "type": "string",
+      "title": "Run diagnostics",
+      "description": "Machine-readable outcome, saved repository and user counts, search progress, deduplication, not-found or non-public targets, stop reason, and sanitized failure details.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_STATUS"
     }
   }
 }

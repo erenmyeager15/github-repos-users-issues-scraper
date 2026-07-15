@@ -44,7 +44,7 @@
         "users": {
           "title": "Users and organizations",
           "transformation": {
-            "fields": ["login", "name", "type", "company", "location", "followers", "following", "publicRepos", "publicGists", "url", "reposScrapedCount", "scrapedAt"]
+            "fields": ["login", "name", "type", "company", "location", "followers", "following", "publicRepos", "publicGists", "createdAt", "updatedAt", "url", "reposScrapedCount", "scrapedAt"]
           },
           "display": {
             "component": "table",
@@ -58,6 +58,8 @@
               "following": { "label": "Following", "format": "number" },
               "publicRepos": { "label": "Public Repos", "format": "number" },
               "publicGists": { "label": "Public Gists", "format": "number" },
+              "createdAt": { "label": "Created", "format": "date" },
+              "updatedAt": { "label": "Updated", "format": "date" },
               "url": { "label": "URL", "format": "link" },
               "reposScrapedCount": { "label": "Nested Repos", "format": "number" },
               "scrapedAt": { "label": "Scraped At", "format": "text" }
@@ -94,5 +96,5 @@
     "timeoutSecs": 3600
   },
   "minMemoryMbytes": 256,
-  "maxMemoryMbytes": 4096
+  "maxMemoryMbytes": 1024
 }

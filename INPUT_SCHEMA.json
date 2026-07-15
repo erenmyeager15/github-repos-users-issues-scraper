@@ -3,6 +3,7 @@
   "description": "Scrape public GitHub repository and organization/user metadata via the official GitHub API. Start with one repo or user; add a token only for larger runs.",
   "type": "object",
   "schemaVersion": 1,
+  "additionalProperties": false,
   "properties": {
     "repos": {
       "title": "Repositories",
@@ -10,21 +11,39 @@
       "type": "array",
       "editor": "stringList",
       "prefill": ["openai/openai-node"],
-      "default": ["openai/openai-node"]
+      "default": ["openai/openai-node"],
+      "maxItems": 1000,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 250
+      }
     },
     "users": {
       "title": "Users / Organizations",
       "description": "GitHub usernames or organization names (e.g. \"torvalds\").",
       "type": "array",
       "editor": "stringList",
-      "default": []
+      "default": [],
+      "maxItems": 500,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
     },
     "searchQueries": {
       "title": "Repository Search Queries",
       "description": "GitHub repository search queries (e.g. \"web scraper language:python\").",
       "type": "array",
       "editor": "stringList",
-      "default": []
+      "default": [],
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
     },
     "includeIssues": {
       "title": "Include Issues",

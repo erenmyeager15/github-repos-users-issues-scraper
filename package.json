@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node dist/main.js",
     "build": "tsc",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "npm run build && node --test dist/mappers.test.js dist/input.test.js dist/github-client.test.js dist/scraper.test.js dist/contracts.test.js"
   },
   "keywords": ["apify", "github", "repos", "users", "issues", "scraper"],
   "license": "Apache-2.0",

@@ -10,7 +10,7 @@ This Actor is API-based, lightweight, and does not need a browser. A GitHub toke
 - Optional nested recent issues and pull requests for each repository
 - User or organization login, name, type, company, location, bio, public counts, followers, following, profile URL, and created/updated dates
 - Optional nested repositories for each user or organization
-- Search query metadata and scrape timestamp
+- Scrape timestamp plus machine-readable run diagnostics
 
 ## Quick Start
 
@@ -50,9 +50,19 @@ For larger jobs, add a GitHub token with no scopes for public data. Prefer a tok
 | `githubToken` | secret string | empty | Optional token for higher GitHub API limits. |
 | `proxyConfiguration` | object | disabled | Keep disabled unless you intentionally need proxy routing. |
 
+Input is validated before any request. Repository URLs must point to one exact
+`owner/repo` path, profile URLs must point to one exact user or organization, and
+duplicates are removed case-insensitively. A run accepts at most 1,000 repository
+inputs, 500 user or organization inputs, and 20 repository search queries.
+
 ## Output Dataset
 
 The default dataset contains repository records and user/organization records. The Store table includes separate views for repositories and users/organizations, while JSON exports include the full nested issue or repository arrays when those options are enabled.
+
+The default key-value store also contains `RUN_STATUS`. It records saved repository
+and user counts, completed or skipped searches, duplicate and not-found targets,
+GitHub incomplete-search signals, non-public records skipped, spending/runtime stops, and a sanitized failure
+message when the official API cannot provide trustworthy data.
 
 Verified sample from an existing successful run:
 
@@ -87,7 +97,7 @@ Verified sample from an existing successful run:
 
 ## Pricing And Cost Control
 
-Current live pricing checked on 2026-06-29:
+Current live pricing checked on 2026-07-15:
 
 | Event | Active price |
 | --- | ---: |
@@ -114,8 +124,17 @@ Cost-control tips:
 ## Known Limits
 
 - Unauthenticated GitHub API calls are limited to 60 requests/hour per IP.
-- GitHub Search API results can be capped by GitHub; narrow search queries work better.
+- GitHub Search API exposes at most 1,000 results per query and can mark a response as incomplete; narrow search queries work better.
 - This Actor collects public GitHub data only. It does not bypass private repositories or authentication.
+
+## Reliability Behavior
+
+- Requests have a 20-second timeout and bounded retries for network and transient `5xx` failures.
+- Real rate limits honor GitHub's `Retry-After` or `X-RateLimit-Reset` headers when the wait is short enough; longer limits fail clearly instead of hammering the API.
+- `401`, ordinary `403`, rate-limit `403/429`, confirmed `404`, malformed JSON, and valid empty searches are handled as distinct outcomes.
+- Records are validated before the atomic dataset write and `repo-scraped` event charge.
+- Private repository payloads exposed by an over-scoped user token are skipped before nested requests or billing.
+- Requests run serially to reduce GitHub secondary-rate-limit risk, and a safe runtime guard stops before the platform timeout.
 
 ## Responsible Use
 

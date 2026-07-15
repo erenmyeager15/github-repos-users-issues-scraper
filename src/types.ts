@@ -82,7 +82,35 @@ export interface UserRecord {
     url: string | null;
     avatarUrl: string | null;
     createdAt: string | null;
+    updatedAt: string | null;
     reposScrapedCount: number;
     repos: UserRepoSummary[];
     scrapedAt: string;
+}
+
+export type GitHubRecord = RepoRecord | UserRecord;
+
+export interface ChargeResult {
+    chargedCount: number;
+    eventChargeLimitReached: boolean;
+}
+
+export interface GitHubRunStatus {
+    status: 'running' | 'succeeded' | 'empty' | 'stopped_spending_limit' | 'stopped_runtime_limit' | 'failed';
+    source: 'github_rest_api';
+    recordsSaved: number;
+    repositoriesSaved: number;
+    usersSaved: number;
+    repositoryTargets: number;
+    userTargets: number;
+    searchQueriesRequested: number;
+    searchQueriesCompleted: number;
+    searchQueriesSkipped: number;
+    incompleteSearchResponses: number;
+    duplicateTargetsSkipped: number;
+    notFound: number;
+    nonPublicSkipped: number;
+    nestedResourcesUnavailable: number;
+    durationMs: number;
+    failureMessage?: string;
 }
