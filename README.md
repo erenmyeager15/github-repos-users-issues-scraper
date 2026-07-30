@@ -97,7 +97,7 @@ Verified sample from an existing successful run:
 
 ## Pricing And Cost Control
 
-Current live pricing checked on 2026-07-15:
+Current live pricing and Store competition checked on 2026-07-30:
 
 | Event | Active price |
 | --- | ---: |
@@ -105,6 +105,11 @@ Current live pricing checked on 2026-07-15:
 | `apify-actor-start` | `$0.00005` per GB |
 
 Nested issues and nested user repositories are included inside the saved repo/user record. The Actor saves and charges each repo/user record atomically and stops when the user's spending limit is reached.
+
+The `$2/1,000` price is intentionally retained between current comparable
+repository/user Actors advertised around `$1.50/1,000` and `$3.78/1,000`.
+Scope differs across Actors; this Actor includes optional nested issues and
+user repositories without charging each nested item separately.
 
 Cost-control tips:
 

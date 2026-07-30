@@ -8,18 +8,22 @@
     "start": "node dist/main.js",
     "build": "tsc",
     "lint": "tsc --noEmit",
-    "test": "npm run build && node --test dist/mappers.test.js dist/input.test.js dist/github-client.test.js dist/scraper.test.js dist/contracts.test.js"
+    "test": "npm run build && node --test dist/mappers.test.js dist/input.test.js dist/github-client.test.js dist/scraper.test.js dist/contracts.test.js",
+    "audit:prod": "npm audit --omit=dev --audit-level=high"
   },
   "keywords": ["apify", "github", "repos", "users", "issues", "scraper"],
   "license": "Apache-2.0",
   "dependencies": {
     "apify": "^3.2.0",
-    "undici": "^6.19.0"
+    "undici": "^6.28.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.8"
   }
 }
